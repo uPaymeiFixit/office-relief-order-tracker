@@ -63,7 +63,7 @@ function installs_to_csv (installs) {
  * @param {boolean=true} $0.multiple - whether to only run until first match
  * @returns {number[]} index of matches
  */
-function findTextIndexes ({
+function findMatchIndexes ({
   pdf_texts, name_match, start_at = 0, multiple = true
 } = {}) {
   const indexes = [];
@@ -101,7 +101,7 @@ function findText ({
   if (typeof name_match === 'string') name_match = new RegExp(`^${name_match}$`, 'i');
   content_match_max_elements--;
 
-  const [name_index] = findTextIndexes({pdf_texts, name_match, start_at, multiple: false});
+  const [name_index] = findMatchIndexes({pdf_texts, name_match, start_at, multiple: false});
   for (let i = 0; i + content_match_max_elements < pdf_texts.length; i++) {
     const match_against = decodeURIComponent(pdf_texts
       .slice(name_index + 1 + i, name_index + 3 + i + content_match_max_elements)
@@ -157,7 +157,7 @@ function parse_pdf (path) {
         content_match: /^\d+.*? .*\d{4,}/s,
         content_match_max_elements: 3,
       });
-      const line_item_indexes = findTextIndexes({
+      const line_item_indexes = findMatchIndexes({
         pdf_texts,
         name_match: /^00\d0$/,
         multiple: true
