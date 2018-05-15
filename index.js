@@ -42,17 +42,17 @@ Promise.all(promises).then(installs => {
  * @returns {string}
  */
 function installs_to_csv (installs) {
-  let ret = '';
+  let csv = '';
 
   // Object.keys(installs[0])
   //   .forEach((key, i, keys) => ret += `${key}${i + 1 != keys.length ? ',' : '\n'}`);
-  ret += `PDF,PO,Ship To,Address\n`;
+  csv += `PDF,PO,Ship To,Address\n`;
 
   installs.forEach(install => {
-    ret += `"${install.pdf}","${install.po}","${install.ship_to}","${install.address}"\n`;
+    csv += `"${install.pdf}","${install.po}","${install.ship_to}","${install.address}"\n`;
   });
 
-  return ret;
+  return csv;
 }
 
 /**
