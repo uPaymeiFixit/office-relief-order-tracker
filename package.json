@@ -1,4 +1,14 @@
 {
+  "name": "office-relief-order-tracker",
+  "version": "0.0.1",
+  "main": "build/index.js",
+  "bin": {
+    "pdf-csv": "build/cli.js"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
     "commander": "^2.15.1",
     "json2csv": "^4.1.2",
