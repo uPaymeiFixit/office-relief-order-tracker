@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "es2017",
+      "es2015",
+      "es6",
+    ],
+    "module": "commonjs",
+    "outDir": "./build",
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    // "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+  },
+  "include": [
+    "lib/**/*.ts",
+    "types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
