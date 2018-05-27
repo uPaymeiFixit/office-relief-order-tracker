@@ -1,3 +1,4 @@
+import * as FS from 'fs-extra';
 import { Parser, json2csv } from 'json2csv';
 
 import { Install } from './index';
@@ -21,4 +22,6 @@ export function installs_to_csv(installs: Install[]): string {
   return parser.parse(installs);
 }
 
+export async function write_csv(csv_path: string, csv: string): Promise<void> {
+  await FS.writeFile(csv_path, csv);
 }

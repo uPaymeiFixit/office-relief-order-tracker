@@ -11,7 +11,7 @@ import Chalk from 'chalk';
 const Package = require(`../package.json`);
 
 import { load_pdf, parse_pdf } from './index';
-import { installs_to_csv } from './output';
+import { installs_to_csv, write_csv } from './output';
 
 process.on('unhandledRejection', error => {
   // console.error(error);
@@ -71,8 +71,7 @@ async function read_pdfs(pdf_path: string | string[], csv_path: string) {
 
   const installs = pdf_data.map(data => parse_pdf(data));
 
-  // console.log(installs);
   const csv = installs_to_csv(installs);
-  await FS.writeFile(csv_path, csv);
+  await write_csv(csv_path, csv);
   console.log(`Wrote CSV to ${csv_path}`);
 }
