@@ -59,5 +59,6 @@ typings/
 .env
 
 /sample/pdfs
+installs.csv
 
 .DS_Store
