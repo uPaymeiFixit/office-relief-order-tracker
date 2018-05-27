@@ -8,6 +8,7 @@ import * as Commander from 'commander';
 import { Command } from 'commander';
 import { PdfData } from 'pdf2json';
 import Chalk from 'chalk';
+import * as Ora from "ora";
 const Package = require(`../package.json`);
 
 import { load_pdf, parse_pdf } from './index';
@@ -58,6 +59,7 @@ async function read_pdfs(pdf_path: string | string[], csv_path: string) {
 
   console.log(`Found ${files.length} files`);
 
+  const read_spinner = Ora('Loading PDFs').start();
   const pdf_data: (PdfData & { path: string })[] = (await Promise.all(
     files.map(file =>
       load_pdf(file)
@@ -68,8 +70,11 @@ async function read_pdfs(pdf_path: string | string[], csv_path: string) {
         }),
     ),
   )).filter((data): data is PdfData & { path: string } => data != null);
+  read_spinner.succeed();
 
+  const parse_spinner = Ora('Parsing PDFs').start();
   const installs = pdf_data.map(data => parse_pdf(data));
+  parse_spinner.succeed();
 
   const csv = installs_to_csv(installs);
   await write_csv(csv_path, csv);
