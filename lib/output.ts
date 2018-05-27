@@ -1,3 +1,5 @@
+import { Parser, json2csv } from 'json2csv';
+
 import { Install } from './index';
 
 /**
@@ -6,11 +8,15 @@ import { Install } from './index';
  * @returns {string}
  */
 export function installs_to_csv(installs: Install[]): string {
-  let csv = '';
-
-  // Object.keys(installs[0])
-  //   .forEach((key, i, keys) => ret += `${key}${i + 1 != keys.length ? ',' : '\n'}`);
-  csv += `PDF,PO,Ship To,Address\n`;
+  const options: json2csv.Options<Install> = {
+    fields: [
+      { label: 'PDF', value: 'pdf' },
+      { label: 'PO', value: 'po' },
+      { label: 'Ship To', value: 'ship_to' },
+      { label: 'Address', value: 'address' },
+    ],
+  };
+  const parser = new Parser(options);
 
   installs.forEach(install => {
     csv += `"${install.pdf}","${install.po}","${install.ship_to}","${
