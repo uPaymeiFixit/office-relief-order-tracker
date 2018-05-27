@@ -18,11 +18,7 @@ export function installs_to_csv(installs: Install[]): string {
   };
   const parser = new Parser(options);
 
-  installs.forEach(install => {
-    csv += `"${install.pdf}","${install.po}","${install.ship_to}","${
-      install.address
-    }"\n`;
-  });
+  return parser.parse(installs);
+}
 
-  return csv;
 }
