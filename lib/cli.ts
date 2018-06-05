@@ -6,12 +6,11 @@ import * as FS from 'fs-extra';
 import * as Path from 'path';
 import * as Commander from 'commander';
 import { Command } from 'commander';
-import { PdfData } from 'pdf2json';
 import Chalk from 'chalk';
-import * as Ora from "ora";
+import * as Ora from 'ora';
 const Package = require(`../package.json`);
 
-import { load_pdf, parse_pdf } from './index';
+import { load_pdf, parse_pdf, FullPdfData } from './index';
 import { installs_to_csv, write_csv } from './output';
 
 process.on('unhandledRejection', error => {
@@ -60,16 +59,20 @@ async function read_pdfs(pdf_path: string | string[], csv_path: string) {
   console.log(`Found ${files.length} files`);
 
   const read_spinner = Ora('Loading PDFs').start();
-  const pdf_data: (PdfData & { path: string })[] = (await Promise.all(
+  const pdf_data: FullPdfData[] = (await Promise.all(
     files.map(file =>
-      load_pdf(file)
-        .then(pdf => ({ path: file, ...pdf }))
-        .catch(err => {
-          console.error(Chalk.redBright(err.parserError));
+      load_pdf(file).catch(err => {
+        if (
+          err.parserError ===
+          'An error occurred while parsing the PDF: InvalidPDFException'
+        ) {
           console.error(Chalk.redBright(`Failed to parse "${file}"`));
-        }),
+        } else {
+          console.error(Chalk.redBright(err.parserError));
+        }
+      }),
     ),
-  )).filter((data): data is PdfData & { path: string } => data != null);
+  )).filter((data): data is FullPdfData => data != null);
   read_spinner.succeed();
 
   const parse_spinner = Ora('Parsing PDFs').start();
