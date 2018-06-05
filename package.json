@@ -12,6 +12,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.15.1",
+    "dedent": "^0.7.0",
     "fs-extra": "^6.0.1",
     "json2csv": "^4.1.2",
     "ora": "^2.1.0",
@@ -19,6 +20,7 @@
     "source-map-support": "^0.5.6"
   },
   "devDependencies": {
+    "@types/dedent": "^0.7.0",
     "@types/fs-extra": "^5.0.2",
     "@types/json2csv": "^4.1.0",
     "@types/node": "^10.1.0",
