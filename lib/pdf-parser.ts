@@ -17,20 +17,11 @@ export function find_match_indexes(
 ): number[] {
   const indexes: number[] = [];
 
-  while (true) {
-    const start_search_index =
-      (indexes[indexes.length - 1] || start_at - 1) + 1;
-    if ((multiple = true && indexes.length > 0 && start_search_index === 0))
-      console.log('Uh oh!');
-
-    // console.log('Starting at', start_search_index);
-    const index = pdf_texts
-      .slice(start_search_index)
-      .findIndex(i => decodeURIComponent(i.R[0].T).match(name_match) != null);
-    console.log(`Found ${name_match} at ${index}`);
-    if (index < 0) break;
-    indexes.push(index + (indexes[indexes.length - 1] || start_at - 1) + 1);
-    if (!multiple) break;
+  for (let i = 0; i < pdf_texts.length; i++) {
+    if (decodeURIComponent(pdf_texts[i].R[0].T).match(name_match) != null) {
+      indexes.push(i);
+      if (!multiple) break;
+    }
   }
 
   return indexes;
