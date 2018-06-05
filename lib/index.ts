@@ -10,12 +10,14 @@ import { find_text, find_match_indexes } from './pdf-parser';
  * @param {string} path path to pdf
  * @returns {Promise<PdfData>}
  */
-export function load_pdf(path: string): Promise<PdfData> {
+export function load_pdf(path: string): Promise<FullPdfData> {
   return new Promise((resolve, reject) => {
     let pdfParser = new PDFParser();
 
     pdfParser.on('pdfParser_dataError', reject);
-    pdfParser.on('pdfParser_dataReady', resolve);
+    pdfParser.on('pdfParser_dataReady', data => {
+      resolve({ path, ...data });
+    });
 
     pdfParser.loadPDF(path);
   });
@@ -25,9 +27,9 @@ export function load_pdf(path: string): Promise<PdfData> {
  * parse PDF
  * @param {string} path path to pdf
  */
-export function parse_pdf(pdf_data: PdfData & { path?: string }): Install {
   let pdf_texts = pdf_data.formImage.Pages[0].Texts.filter(
     (i: any) => i != null,
+export function parse_pdf(pdf_data: FullPdfData): Install {
   );
 
   const data: Install = {
@@ -69,3 +71,5 @@ export interface Install {
   address: string;
   line_items?: string[];
 }
+
+export type FullPdfData = PdfData & { path: string };
