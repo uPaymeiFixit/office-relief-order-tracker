@@ -115,6 +115,8 @@ declare module 'pdf2json' {
         T: string;
         /** Style index from style dictionary */
         S: number | string | any;
+        /** TODO: figure out what this is. Maybe it's location? */
+        TS: number[];
       }[];
     }
   }
