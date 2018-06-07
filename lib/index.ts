@@ -111,11 +111,10 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
 function extract_install_info(pdf_data: FullPdfData): string[] {
   // TODO: What about text that overflows the box?
 
-  const texts: TextBlock[] = [];
+  let texts: TextBlock[] = [];
   let overall_height: number = 0;
 
-  for (let i = 0; i < pdf_data.formImage.Pages.length; i++) {
-    const page = pdf_data.formImage.Pages[i];
+  for (const page of pdf_data.formImage.Pages) {
     // --Start-- Find install info box bounds
     // Find "Installation Information & Notes" in Texts
     const install_info_text =
@@ -167,22 +166,47 @@ function extract_install_info(pdf_data: FullPdfData): string[] {
     // --End--
 
     // --Start-- Merge each page's texts
-    overall_height += i > 0 ? pdf_data.formImage.Pages[i - 1].Height : 0;
-    texts.push(...page_texts.map(text => ({
-      ...text,
-      y: text.y + overall_height,
-    })));
+    texts.push(
+      ...page_texts.map(text => ({
+        ...text,
+        y: text.y + overall_height,
+      })),
+    );
+    overall_height += page.Height;
     // --End--
   }
 
-
-  // --Start-- Split text up in to line items
-  const line_item_numbers_indexes = find_match_indexes(texts, /^00\d0$/);
-  console.log('line_item_numbers_indexes');
-  console.log(line_item_numbers_indexes);
+  // --Start-- Sort `texts` by position
+  texts = texts.sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x));
   // --End--
 
-  return [];
+  // --Start-- Split text up in to line items
+  const line_item_numbers_indexes = find_match_indexes(texts, /^3PI-INSTALL-/);
+  // console.log('line_item_numbers_indexes');
+  // console.log(line_item_numbers_indexes);
+  // --End--
+
+  const line_items_texts: TextBlock[][] = [];
+  for (let i = 0; i < line_item_numbers_indexes.length; i++) {
+    line_items_texts.push(
+      texts.slice(
+        line_item_numbers_indexes[i],
+        line_item_numbers_indexes[i + 1],
+      ),
+    );
+  }
+
+  return line_items_texts.map(texts =>
+    texts.reduce<string>((val, text, i, arr) => {
+      if (i === 0) {
+        return decodeURIComponent(text.R[0].T);
+      } else if (arr[i - 1].y < arr[i].y) {
+        return `${val}\n${decodeURIComponent(text.R[0].T)}`;
+      } else {
+        return `${val} ${decodeURIComponent(text.R[0].T)}`;
+      }
+    }, ''),
+  );
 }
 
 /**
