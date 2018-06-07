@@ -37,10 +37,10 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
   const line_item_numbers_indexes = find_match_indexes(pdf_texts, /^00\d0$/, {
     multiple: true,
   });
-  console.log(
-    `"${pdf_data.path}" has ${line_item_numbers_indexes.length} line items`,
-  );
-  console.log(line_item_numbers_indexes.map(i => pdf_texts[i].R[0].T));
+  // console.log(
+  //   `"${pdf_data.path}" has ${line_item_numbers_indexes.length} line items`,
+  // );
+  // console.log(line_item_numbers_indexes.map(i => pdf_texts[i].R[0].T));
 
   const line_items_indexes = find_match_indexes(pdf_texts, /3PI-INSTALL-.+/i);
   if (line_items_indexes.length !== line_item_numbers_indexes.length) {
@@ -55,10 +55,7 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
     `);
   }
 
-  console.log(line_items_indexes.map(i => pdf_texts[i].R[0].T));
-
-  console.log(`Install info:`);
-  console.log(extract_install_info(pdf_data));
+  // console.log(line_items_indexes.map(i => pdf_texts[i].R[0].T));
 
   const line_items: LineItem[] = [];
 
