@@ -91,7 +91,9 @@ export function extract_install_info(pdf_data: FullPdfData): string[] {
         })[0]
       ];
     if (install_info_text == null) {
-      throw new Error(`Could not find "Installation Information" text`);
+      throw new Error(
+        `Could not find "Installation Information" text in "${pdf_data.path}"`,
+      );
     }
     // Find Fill that surrounds "Installation Information & Notes"
     const bounding_fill = page.Fills.reduce((val, fill) => {
