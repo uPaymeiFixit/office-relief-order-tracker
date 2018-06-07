@@ -5,6 +5,7 @@ import { PdfData, TextBlock } from 'pdf2json';
 import * as dedent from 'dedent';
 
 import { find_text, find_match_indexes } from './pdf-parser';
+import { Box, box_contains_point, offset_box } from './utils/box';
 
 /**
  * loads PDF by path
@@ -157,12 +158,16 @@ function extract_install_info(pdf_data: FullPdfData): string[] {
     }, page.VLines[0]);
     // console.log(left, right);
     // Store box's bounds
-    const bounding_box: Box = {
-      x: left.x,
-      y: left.y + bounding_fill.h,
-      w: right.x - left.x,
-      h: left.l - bounding_fill.h,
-    };
+    // TODO: instead of doing a dumb offset, make bounding boxes around text and compare that
+    const bounding_box: Box = offset_box(
+      new Box(
+        left.x,
+        left.y + bounding_fill.h,
+        right.x - left.x,
+        left.l - bounding_fill.h,
+      ),
+      0.15,
+    );
     // console.log(bounding_box);
     // --End--
 
@@ -170,7 +175,7 @@ function extract_install_info(pdf_data: FullPdfData): string[] {
     const page_texts = page.Texts.filter(text =>
       box_contains_point(bounding_box, text),
     );
-    console.log(page_texts.length);
+    // console.log(page_texts.length);
     // --End--
 
     // --Start-- Merge each page's texts
@@ -242,15 +247,6 @@ function item_abbr_to_name(abbr: string): string {
   }
 }
 
-function box_contains_point(box: Box, point: Point): boolean {
-  return (
-    box.x <= point.x &&
-    box.y <= point.y &&
-    box.x + box.w >= point.x &&
-    box.y + box.h >= point.y
-  );
-}
-
 export interface Install {
   pdf: string;
   po: string;
@@ -282,16 +278,6 @@ export interface Person {
   name?: string;
   phones?: string[];
   emails?: string[];
-}
-
-export interface Point {
-  x: number;
-  y: number;
-}
-
-export interface Box extends Point {
-  w: number;
-  h: number;
 }
 
 export type FullPdfData = PdfData & { path: string };
