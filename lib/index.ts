@@ -61,19 +61,32 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
   // console.log(line_items_indexes.map(i => pdf_texts[i].R[0].T));
 
   const line_items: LineItem[] = [];
+  extract_install_info(pdf_data).forEach((raw_info, i) => {
+    // console.log(`LINE ITEM #${i + 1}\n`, raw_info);
 
-  for (const i in line_item_numbers_indexes) {
-    const name_short = pdf_texts[line_items_indexes[i]].R[0].T.replace(
-      '3PI-INSTALL-',
-      '',
+    const name_short_match = raw_info.match(/3PI-INSTALL-(.+)$/im);
+    const name_short = name_short_match != null ? name_short_match[1] : 'N/A';
+
+    raw_info.toLowerCase().indexOf('location');
+
+    const location = install_info_text_match(raw_info, 'Location:');
+    // const end_user_raw = install_info_text_match(raw_info, /end[\/-]user:/);
+    const end_user_raw = install_info_text_match(
+      raw_info,
+      'End user contact info:',
     );
+    const end_user = Person.Parse(end_user_raw || '');
+    console.log(end_user);
+
     line_items.push({
-      id: parseInt(pdf_texts[line_item_numbers_indexes[i]].R[0].T, 10),
+      id: i + 1,
       name_short,
       name: item_abbr_to_name(name_short),
-      full_content: '',
+      full_content: raw_info,
+      location,
+      end_user: [end_user],
     });
-  }
+  });
 
   const data: Install = {
     pdf: pdf_data.path || 'N/A',
@@ -92,6 +105,61 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
   // TODO: pull location from install info and notes section
 
   return data;
+}
+
+/**
+ * Searches text for install information
+ * @param install_info Install info text - usually from
+ *  `pdf-parser:extract_install_info`
+ * @param search The content to search for to start the match
+ */
+function install_info_text_match(
+  install_info: string,
+  search: string | RegExp,
+): string | undefined {
+  let index_start: number;
+  let index_end: number | undefined = undefined;
+
+  let search_start: number;
+  let search_start_length: number;
+
+  if (typeof search === 'string') {
+    search_start = install_info.indexOf(search);
+    search_start_length = search.length;
+    if (search_start === -1) {
+      return undefined;
+    }
+  } else {
+    const search_matches = install_info.match(search);
+    if (search_matches != null) {
+      search_start = install_info.indexOf(search_matches[0]);
+      search_start_length = search_matches[0].length;
+    } else {
+      return undefined;
+    }
+  }
+
+  const search_start_matches = install_info
+    .slice(search_start + search_start_length)
+    .match(/^\n+/);
+  if (search_start_matches == null) {
+    index_start = search_start + search_start_length;
+  } else {
+    index_start =
+      search_start +
+      search_start_length +
+      (search_start_matches.index || 0) +
+      search_start_matches[0].length;
+  }
+  const end_matches = install_info
+    .slice(search_start + search_start_length)
+    .match(/(?:={3,})|(?:^.*:$)/im);
+  const length = end_matches ? end_matches.index || -1 : -1;
+  if (length !== -1) {
+    index_end = search_start + length;
+  }
+
+  return install_info.slice(index_start, index_end);
 }
 
 /**
@@ -146,10 +214,32 @@ export interface LineItem {
   full_content: string;
 }
 
-export interface Person {
+export class Person {
   name?: string;
   phones?: string[];
   emails?: string[];
+
+  constructor({ name, phones, emails }: Person = {}) {
+    this.name = name;
+    this.phones = phones;
+    this.emails = emails;
+  }
+
+  static Parse(text: string): Person {
+    const emails = text.match(/(\S+)@((?:\S+\.)+\S+)/g) || [];
+    const phones = text.match(/(\d{3,3}).*?(\d{3,3}).*?(\d{4,4})/g) || [];
+    let name: string;
+    if (text.match(/.+\n.+/) != null) {
+      name = text.slice(0, text.indexOf('\n'));
+    } else {
+      name = '???';
+    }
+    return new Person({
+      name,
+      emails,
+      phones: phones.map<string>(phone => phone.replace(/\D/g, '')),
+    });
+  }
 }
 
 export type FullPdfData = PdfData & { path: string };
