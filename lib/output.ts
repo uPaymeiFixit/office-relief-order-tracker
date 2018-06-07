@@ -15,6 +15,7 @@ export function installs_to_csv(installs: Install[]): string {
       { label: 'PO', value: 'po' },
       { label: 'Ship To', value: 'ship_to' },
       { label: 'Address', value: 'address' },
+      { label: 'Line Item Count', value: 'line_items.length' },
       { label: 'Line Items', value: 'line_items' },
     ],
   };
