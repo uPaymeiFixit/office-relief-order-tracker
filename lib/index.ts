@@ -133,17 +133,25 @@ function extract_install_info(pdf_data: FullPdfData): string[] {
         else return fill;
       } else return val;
     });
+    if (bounding_fill == null) {
+      throw new Error('Could not find installation `Fill`');
+    }
     // console.log(bounding_fill);
     // Find box of `VLines` and `HLines` of similar width to `bounding_fill`
+    // TODO: This fails to find the correct line if it runs bottom to top
     const left = page.VLines.reduce((val, line) => {
-      return Math.abs(line.x - bounding_fill.x) <
-        Math.abs(val.x - bounding_fill.x)
+      return Math.pow(bounding_fill.x - line.x, 2) +
+        Math.pow(bounding_fill.y + bounding_fill.h - line.y, 2) <
+        Math.pow(bounding_fill.x - val.x, 2) +
+          Math.pow(bounding_fill.y + bounding_fill.h - val.y, 2)
         ? line
         : val;
     }, page.VLines[0]);
     const right = page.VLines.reduce((val, line) => {
-      return Math.abs(line.x - (bounding_fill.x + bounding_fill.w)) <
-        Math.abs(val.x - (bounding_fill.x + bounding_fill.w))
+      return Math.pow(bounding_fill.x + bounding_fill.w - line.x, 2) +
+        Math.pow(bounding_fill.y + bounding_fill.h - line.y, 2) <
+        Math.pow(bounding_fill.x + bounding_fill.w - val.x, 2) +
+          Math.pow(bounding_fill.y + bounding_fill.h - val.y, 2)
         ? line
         : val;
     }, page.VLines[0]);
