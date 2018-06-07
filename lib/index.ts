@@ -88,30 +88,18 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
       }) || 'N/A',
     line_items,
   };
-  // data.line_items = find_text(
-  //   pdf_texts,
-  //   'Ship To',
-  //   /^\d+.*? .*\d+/s, {
-  //   content_match_max_elements: 3,
-  // });
   // TODO: install info and notes line item
   // TODO: pull location from install info and notes section
-
-  // console.log('PO #:', data.po);
-  // console.log('Ship To:', data.ship_to);
-  // console.log('Address:', data.address);
 
   return data;
 }
 
 /**
- * Extracts all line item text from the "Installation Information & Notes" box
+ * Extracts line item text from the "Installation Information & Notes" boxes
  * @param pdf_data
  * @returns Array of strings of line item notes
  */
 function extract_install_info(pdf_data: FullPdfData): string[] {
-  // TODO: What about text that overflows the box?
-
   let texts: TextBlock[] = [];
   let overall_height: number = 0;
 
