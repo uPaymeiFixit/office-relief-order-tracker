@@ -232,7 +232,8 @@ export class Person {
     if (text.match(/.+\n.+/) != null) {
       name = text.slice(0, text.indexOf('\n'));
     } else {
-      name = '???';
+      // TODO: figure out how to slice out just user's name
+      name = text.trim();
     }
     return new Person({
       name,
