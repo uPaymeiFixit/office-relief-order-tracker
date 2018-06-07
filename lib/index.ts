@@ -182,6 +182,8 @@ function item_abbr_to_name(abbr: string): string {
       return 'Small table (2)';
     case '2lgtbl':
       return 'Large table (2)';
+    case 'chair':
+      return 'Chair';
     default:
       return abbr;
   }
