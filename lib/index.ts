@@ -67,14 +67,14 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
     const name_short_match = raw_info.match(/3PI-INSTALL-(.+)$/im);
     const name_short = name_short_match != null ? name_short_match[1] : 'N/A';
 
-    raw_info.toLowerCase().indexOf('location');
-
     const location = install_info_text_match(raw_info, 'Location:');
+
     const end_user_raw = install_info_text_match(
       raw_info,
       /(End user contact info:?)|(END-USER.*?:?)/i,
     );
     const end_user = Person.Parse(end_user_raw || '');
+
     const contact_raw = install_info_text_match(
       raw_info,
       /(^contact:?(?:\nrtwc:)?)/im,
