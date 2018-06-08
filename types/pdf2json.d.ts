@@ -1,4 +1,6 @@
 declare module 'pdf2json' {
+  import { Stream } from 'stream';
+
   namespace PDFParser {
     interface PdfData {
       formImage: FormImage;
@@ -219,17 +221,18 @@ declare module 'pdf2json' {
     ];
   }
 
-  class PDFParser {
+  class PDFParser extends Stream {
     on(
       event: 'pdfParser_dataReady',
       listener: (pdf_data: PDFParser.PdfData) => void,
-    ): PDFParser;
+    ): this;
     on(
       event: 'pdfParser_dataError',
       listener: (err_data: PDFParser.ParserError) => void,
-    ): PDFParser;
+    ): this;
 
     loadPDF(pdfFilePath: string): void;
+    parseBuffer(buffer: Buffer): void;
   }
 
   export = PDFParser;
