@@ -70,7 +70,6 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
     raw_info.toLowerCase().indexOf('location');
 
     const location = install_info_text_match(raw_info, 'Location:');
-    // const end_user_raw = install_info_text_match(raw_info, /end[\/-]user:/);
     const end_user_raw = install_info_text_match(
       raw_info,
       /(End user contact info:?)|(END-USER.*?:?)/i,
@@ -141,9 +140,7 @@ function install_info_text_match(
     }
   }
 
-  const search_start_matches = install_info
-    .slice(search_start)
-    .match(/^\n+/);
+  const search_start_matches = install_info.slice(search_start).match(/^\n+/);
   if (search_start_matches == null) {
     index_start = search_start;
   } else {
