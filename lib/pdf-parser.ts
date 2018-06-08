@@ -7,11 +7,11 @@ import { Box, box_contains_point, offset_box } from './utils/box';
 
 /**
  * Finds PDF item indexes matching pattern
- * @param {object[]} pdf_texts array of null-filtered text blocks from `pdf2json`
- * @param {string|RegExp} name_match
- * @param {number} $0.start_at
- * @param {boolean=true} $0.multiple whether to only run until first match
- * @returns {number[]} index of matches
+ * @param pdf_texts array of null-filtered text blocks from `pdf2json`
+ * @param name_match
+ * @param $0.start_at
+ * @param $0.multiple whether to only run until first match
+ * @returns index of matches
  */
 export function find_match_indexes(
   pdf_texts: TextBlock[],
@@ -32,13 +32,13 @@ export function find_match_indexes(
 
 /**
  * Finds text matching pattern, following a label
- * @param {object[]} pdf_texts array of null-filtered text blocks from `pdf2json`
- * @param {string|RegExp} name_match
- * @param {string|RegExp} content_match
- * @param {number} $0.content_match_max_elements max number of elements after
+ * @param pdf_texts array of null-filtered text blocks from `pdf2json`
+ * @param name_match
+ * @param content_match
+ * @param $0.content_match_max_elements max number of elements after
  *  `name_match` to search through
- * @param {number} $0.start_at index of `pdf_texts` array to start searching from
- * @returns {string} returns the matched string if found, undefined if not found
+ * @param $0.start_at index of `pdf_texts` array to start searching from
+ * @returns returns the matched string if found, undefined if not found
  */
 export function find_text(
   pdf_texts: TextBlock[],

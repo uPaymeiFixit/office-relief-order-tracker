@@ -12,8 +12,8 @@ import {
 
 /**
  * loads PDF by path
- * @param {string} path path to pdf
- * @returns {Promise<PdfData>}
+ * @param path path to pdf
+ * @returns parsed PDF data
  */
 export function load_pdf(path: string): Promise<FullPdfData> {
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ export function load_pdf(path: string): Promise<FullPdfData> {
 
 /**
  * parse PDF
- * @param {string} path path to pdf
+ * @param path path to pdf
  */
 export function parse_pdf(pdf_data: FullPdfData): Install {
   let pdf_texts: TextBlock[] = (<TextBlock[]>[])

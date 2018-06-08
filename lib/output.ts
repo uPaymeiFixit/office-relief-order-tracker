@@ -5,8 +5,8 @@ import { Install } from './index';
 
 /**
  * converts installs to CSV string
- * @param {Install[]} installs
- * @returns {string}
+ * @param installs
+ * @returns CSV string
  */
 export function installs_to_csv(installs: Install[]): string {
   const options: json2csv.Options<Install> = {

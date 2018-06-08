@@ -51,7 +51,7 @@ declare module 'pdf2json' {
       /** The height of the page in page unit */
       Height: number;
       /**
-       * Each object with in `Boxset` can be either checkbox or radio button, the
+       * Each object with in `Boxsets` can be either checkbox or radio button, the
        * only difference is that radio button object will have more than one
        * element in 'boxes' array, it indicates it's a radio button group.
        */
