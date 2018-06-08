@@ -76,7 +76,11 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
       /(End user contact info:)|(END-USER.*?:)/i,
     );
     const end_user = Person.Parse(end_user_raw || '');
-    console.log(end_user);
+    const contact_raw = install_info_text_match(
+      raw_info,
+      /(^contact:?(?:\nrtwc:)?)/im,
+    );
+    const contact = Person.Parse(contact_raw || '');
 
     line_items.push({
       id: i + 1,
@@ -85,6 +89,7 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
       full_content: raw_info,
       location,
       end_user: [end_user],
+      contact: [contact],
     });
   });
 
