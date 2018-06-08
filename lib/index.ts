@@ -121,38 +121,34 @@ function install_info_text_match(
   let index_end: number | undefined = undefined;
 
   let search_start: number;
-  let search_start_length: number;
 
   if (typeof search === 'string') {
-    search_start = install_info.indexOf(search);
-    search_start_length = search.length;
+    search_start = install_info.indexOf(search) + search.length;
     if (search_start === -1) {
       return undefined;
     }
   } else {
     const search_matches = install_info.match(search);
     if (search_matches != null) {
-      search_start = install_info.indexOf(search_matches[0]);
-      search_start_length = search_matches[0].length;
+      search_start = (search_matches.index || 0) + search_matches[0].length;
     } else {
       return undefined;
     }
   }
 
   const search_start_matches = install_info
-    .slice(search_start + search_start_length)
+    .slice(search_start)
     .match(/^\n+/);
   if (search_start_matches == null) {
-    index_start = search_start + search_start_length;
+    index_start = search_start;
   } else {
     index_start =
       search_start +
-      search_start_length +
       (search_start_matches.index || 0) +
       search_start_matches[0].length;
   }
   const end_matches = install_info
-    .slice(search_start + search_start_length)
+    .slice(search_start)
     .match(/(?:={3,})|(?:^.*:$)/im);
   const length = end_matches ? end_matches.index || -1 : -1;
   if (length !== -1) {
