@@ -73,7 +73,7 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
     // const end_user_raw = install_info_text_match(raw_info, /end[\/-]user:/);
     const end_user_raw = install_info_text_match(
       raw_info,
-      'End user contact info:',
+      /(End user contact info:)|(END-USER.*?:)/i,
     );
     const end_user = Person.Parse(end_user_raw || '');
     console.log(end_user);
