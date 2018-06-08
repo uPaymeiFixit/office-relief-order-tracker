@@ -81,6 +81,12 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
     );
     const contact = Person.Parse(contact_raw || '');
 
+    const supervisor_raw = install_info_text_match(
+      raw_info,
+      /(^supervisor:)/im,
+    );
+    const supervisor = Person.Parse(supervisor_raw || '');
+
     line_items.push({
       id: i + 1,
       name_short,
@@ -89,6 +95,7 @@ export function parse_pdf(pdf_data: FullPdfData): Install {
       location,
       end_user: [end_user],
       contact: [contact],
+      supervisor: [supervisor],
     });
   });
 
